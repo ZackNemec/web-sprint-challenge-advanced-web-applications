@@ -1,13 +1,50 @@
 import React from "react";
+import axios from "axios";
+import {useHistory} from 'react-router-dom';
+
 
 const Login = () => {
-  // make a post request to retrieve a token from the api
-  // when you have handled the token, navigate to the BubblePage route
+const [login, setLogin] = React.useState({
+  username:'',
+  password:'',
+});
+
+const changeHandler = (e) =>  {
+setLogin({
+  ...login,
+  [e.target.name]:e.target.value
+})
+}
+const history = useHistory()
+const submit = (e) => {
+  e.preventDefault();
+  axios
+  .post('http://localhost:5000/api/login', login)
+  .then(res => {
+    console.log(res.data.payload);
+window.localStorage.setItem('token', res.data.payload)
+  })
+  history.push('/bubbles')
+}
+
   return (
-    <>
-      <h1>Welcome to the Bubble App!</h1>
-      <p>Build a login page here</p>
-    </>
+
+<div>
+  <form onSubmit ={submit}>
+    <input type="text"
+           placeholder="Username"
+           name="username"
+           value={login.username}
+           onChange={changeHandler}/>
+    <input type="password"
+           placeholder="Password"
+           name="password"
+           value={login.password}
+           onChange={changeHandler}/>
+    <button>Login</button>
+  </form>
+</div>
+
   );
 };
 
